@@ -5,7 +5,7 @@ from dataclasses import dataclass, asdict
 from typing import Iterable
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 
 DEFAULT_MODEL = "uer/gpt2-chinese-cluecorpussmall"
@@ -34,27 +34,62 @@ class CausalLMScorer:
     def __init__(self, model_name: str | None = None, device: str | None = None):
         self.model_name = model_name or os.getenv("RIME_CONTEXT_LM_MODEL", DEFAULT_MODEL)
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
+
+        # Some older Chinese GPT-2 checkpoints inherit GPT-2's default
+        # bos/eos id (50256), even though their Chinese vocabulary is much
+        # smaller. We do not use generation here, so invalid generation-only
+        # special-token ids can safely be cleared before loading.
+        config = AutoConfig.from_pretrained(self.model_name)
+        vocab_size = int(config.vocab_size)
+        for attr in ("bos_token_id", "eos_token_id"):
+            token_id = getattr(config, attr, None)
+            if token_id is not None and not (0 <= int(token_id) < vocab_size):
+                setattr(config, attr, None)
+
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.model_name,
+            config=config,
+        )
 
         if self.tokenizer.pad_token_id is None:
-            if self.tokenizer.eos_token_id is not None:
-                self.tokenizer.pad_token = self.tokenizer.eos_token
+            # BERT-tokenized Chinese GPT-2 models normally have [PAD]/[SEP]/[CLS].
+            # Prefer a real tokenizer special token rather than an invalid GPT-2 EOS.
+            for token_name in ("sep_token", "cls_token", "unk_token"):
+                token = getattr(self.tokenizer, token_name, None)
+                if token is not None:
+                    self.tokenizer.pad_token = token
+                    break
             else:
-                raise RuntimeError("Tokenizer has neither pad_token nor eos_token.")
+                raise RuntimeError("Tokenizer has no usable padding token.")
 
         if device is None:
             device = "cuda" if torch.cuda.is_available() else "cpu"
         self.device = torch.device(device)
         self.model.to(self.device)
         self.model.eval()
+        self.model.config.pad_token_id = self.tokenizer.pad_token_id
 
-        self.prefix_token_id = (
-            self.tokenizer.bos_token_id
-            if self.tokenizer.bos_token_id is not None
-            else self.tokenizer.eos_token_id
+        # Scoring a sequence requires one token before its first scored token.
+        # For this Chinese GPT-2/BERT vocabulary, [CLS] is a valid neutral
+        # technical prefix. It is shared by all candidates, so relative ranking
+        # under a non-empty context is unaffected by candidate-specific bias.
+        prefix_candidates = (
+            self.tokenizer.cls_token_id,
+            self.tokenizer.bos_token_id,
+            self.tokenizer.sep_token_id,
+            self.tokenizer.pad_token_id,
+            self.tokenizer.unk_token_id,
+        )
+        self.prefix_token_id = next(
+            (
+                int(token_id)
+                for token_id in prefix_candidates
+                if token_id is not None and 0 <= int(token_id) < vocab_size
+            ),
+            None,
         )
         if self.prefix_token_id is None:
-            raise RuntimeError("A BOS or EOS token is required to score the first token.")
+            raise RuntimeError("Tokenizer has no valid prefix token for causal scoring.")
 
         self.max_positions = int(
             getattr(self.model.config, "n_positions", 0)
