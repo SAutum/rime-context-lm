@@ -93,6 +93,14 @@ Before integrating deeply into Weasel/librime, prove one thing offline:
 
 Only after that result is positive do we optimize inference and wire the scorer into the live Rime candidate pipeline.
 
+## License
+
+This repository is **source-available, not OSI open source**.
+
+Noncommercial use, modification, and redistribution are permitted under the terms referenced in `LICENSE`. **Any commercial use requires a separate paid commercial license.** This requirement also applies to forks, modified versions, and derivative works to the extent that they contain or adapt copyrightable material from this project.
+
+See `LICENSE` and `COMMERCIAL_LICENSE.md` for details.
+
 ## Reference
 
 Primary historical baseline paper:
