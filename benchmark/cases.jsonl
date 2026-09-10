@@ -1,0 +1,10 @@
+{"context":"我今天身体不舒服准备去","pinyin":"yiyuan","candidates":["医院","意愿","一元","议员"],"expected":"医院"}
+{"context":"这个实验的结果存在明显的","pinyin":"piancha","candidates":["偏差","片茶","骗查"],"expected":"偏差"}
+{"context":"请把这个文件保存到本地","pinyin":"wenjianjia","candidates":["文件夹","文件家","稳健加"],"expected":"文件夹"}
+{"context":"训练数据的质量会直接影响模型的","pinyin":"biaoxian","candidates":["表现","表线","标线"],"expected":"表现"}
+{"context":"医生建议患者每天按时","pinyin":"fuyao","candidates":["服药","扶摇","富饶"],"expected":"服药"}
+{"context":"这家公司今年计划扩大海外","pinyin":"shichang","candidates":["市场","时长","试唱"],"expected":"市场"}
+{"context":"论文中需要进一步讨论实验的","pinyin":"juxianxing","candidates":["局限性","巨显性","局线型"],"expected":"局限性"}
+{"context":"如果网络连接失败，请先检查路由器和","pinyin":"wangka","candidates":["网卡","王卡","网咖"],"expected":"网卡"}
+{"context":"银行已经确认这笔款项完成了","pinyin":"zhifu","candidates":["支付","致富","制服"],"expected":"支付"}
+{"context":"研究人员使用显微镜观察细胞的","pinyin":"xingtai","candidates":["形态","邢台","杏台"],"expected":"形态"}
