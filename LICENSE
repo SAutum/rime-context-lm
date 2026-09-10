@@ -1,0 +1,24 @@
+Source-Available Noncommercial License Notice
+
+Copyright (c) 2026 SAutum
+
+This software is made available under the PolyForm Noncommercial License 1.0.0:
+https://polyformproject.org/licenses/noncommercial/1.0.0/
+
+Required Notice: Copyright (c) 2026 SAutum. Commercial use requires a separate paid commercial license.
+
+Public-license scope
+
+The PolyForm Noncommercial License 1.0.0 governs use, modification, and distribution of this software for permitted noncommercial purposes.
+
+Commercial use
+
+No commercial-use rights are granted by this public license. Any commercial use of this software requires a separate paid commercial license from the copyright holder.
+
+This requirement also applies to forks, modified versions, and derivative works to the extent that they contain, copy, adapt, or otherwise use copyrightable material from this software.
+
+Examples of commercial use include using the software, or a derivative containing this software, in connection with a paid product or service, commercial SaaS or hosted service, paid software distribution, revenue-generating deployment, or other activity undertaken for commercial advantage or monetary compensation.
+
+A separately negotiated commercial license may grant commercial-use rights on different terms. See COMMERCIAL_LICENSE.md.
+
+This notice does not claim rights over independently created software that does not copy or derive from copyrightable material in this repository, and it does not override licenses that apply to third-party components or dependencies.
